@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/hotels";
+const API_URL = "https://grand-oasis-backend.onrender.com";
 
 /* =====================
    ASYNC ACTIONS
