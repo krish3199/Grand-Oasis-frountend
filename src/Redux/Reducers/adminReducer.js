@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import axios from "axios"
+import { baseURL } from "./baseURL"
 
-const API_URL = "http://localhost:5000/api/admin"
+const API_URL = `${baseURL}api/admin`
 
 // GET ALL USERS
 export const getAllUsers = createAsyncThunk(
@@ -42,7 +43,7 @@ export const addHotel = createAsyncThunk(
   "admin/addHotel",
   async (hotelData, thunkAPI) => {
     try {
-      const { data } = await axios.post("http://localhost:5000/api/hotels/add", hotelData, {
+      const { data } = await axios.post(`${baseURL}api/hotels/add`, hotelData, {
         withCredentials: true,
       })
       return data.hotel
@@ -59,7 +60,7 @@ export const updateHotel = createAsyncThunk(
   "admin/updateHotel",
   async ({ id, data: hotelData }, thunkAPI) => {
     try {
-      const { data } = await axios.put(`http://localhost:5000/api/hotels/${id}`, hotelData, {
+      const { data } = await axios.put(`${baseURL}api/hotels/${id}`, hotelData, {
         withCredentials: true,
       })
       return data.hotel

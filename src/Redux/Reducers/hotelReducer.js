@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { baseURL } from "./baseURL";
 
-const API_URL = "http://localhost:5000/api/hotels";
+const API_URL = `${baseURL}api/hotels`;
 
 /* =====================
    ASYNC ACTIONS
