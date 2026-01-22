@@ -43,7 +43,15 @@ const MyBookings = () => {
 
   useEffect(() => {
     if (user) {
-      dispatch(getMyBookings())
+      dispatch(getMyBookings()).catch((err) => {
+        console.error("FETCH BOOKINGS ERROR:", err)
+        if (err?.includes("401") || err?.includes("Not authorized")) {
+          toast.error("Session expired. Please login again.")
+          navigate("/login")
+        } else {
+          toast.error(err || "Failed to load bookings")
+        }
+      })
     } else {
       navigate("/login")
     }

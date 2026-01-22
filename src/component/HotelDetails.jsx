@@ -193,9 +193,14 @@ const HotelDetails = () => {
             }, 1500)
           } catch (err) {
             console.error("PAYMENT VERIFY ERROR", err)
-            toast.error(
-              err?.response?.data?.message || "Payment verified but booking failed. Please contact support."
-            )
+            const errorMessage = err?.response?.data?.message || err?.message || "Payment verified but booking failed. Please contact support."
+            
+            if (err?.response?.status === 401) {
+              toast.error("Session expired. Please login again.")
+              navigate("/login")
+            } else {
+              toast.error(errorMessage)
+            }
           }
         },
         prefill: {
@@ -216,7 +221,17 @@ const HotelDetails = () => {
       rzp.open()
     } catch (error) {
       console.error("PAYMENT INIT ERROR", error)
-      toast.error(error?.response?.data?.message || "Payment failed. Please try again.")
+      const errorMessage = error?.response?.data?.message || error?.message || "Payment failed. Please try again."
+      
+      // Check for specific errors
+      if (error?.response?.status === 401) {
+        toast.error("Please login to continue")
+        navigate("/login")
+      } else if (error?.response?.status === 500 && errorMessage.includes("Razorpay")) {
+        toast.error("Payment gateway not configured. Please contact support.")
+      } else {
+        toast.error(errorMessage)
+      }
     } finally {
       setPaymentLoading(false)
     }
