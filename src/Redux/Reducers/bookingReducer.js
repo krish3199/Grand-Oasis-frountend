@@ -1,8 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { baseURL } from "./baseURL";
 
-const API_URL = `${baseURL}api/bookings`;
+const API_URL = "https://grand-oasis-backend.onrender.com";
 
 // CREATE BOOKING
 export const createBooking = createAsyncThunk(

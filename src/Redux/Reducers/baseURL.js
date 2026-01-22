@@ -1,1 +1,1 @@
-export const baseURL = "https://grand-oasis-backend.onrender.com/"
+export const baseURL = "https://grand-oasis-backend.onrender.com"
