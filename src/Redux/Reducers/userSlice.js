@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-
-const baseURL = "https://grand-oasis-backend.onrender.com";
+import { baseURL } from "./baseURL";
 
 /* ================= LOGIN ================= */
 export const login = createAsyncThunk(

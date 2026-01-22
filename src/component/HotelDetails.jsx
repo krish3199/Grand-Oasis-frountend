@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { getHotelById } from "../Redux/Reducers/hotelReducer"
 import { toast } from "react-toastify"
 import axios from "axios"
+import { baseURL } from "../Redux/Reducers/baseURL"
 
 // ================= PREMIUM SVG ICONS =================
 const Icons = {
@@ -151,7 +152,7 @@ const HotelDetails = () => {
       }
 
       const { data } = await axios.post(
-        "https://grand-oasis-backend.onrender.com/api/payment/order",
+        `${baseURL}/api/payment/order`,
         { amount: totalPrice },
         { withCredentials: true }
       )
@@ -171,7 +172,7 @@ const HotelDetails = () => {
         handler: async function (response) {
           try {
             await axios.post(
-              "https://grand-oasis-backend.onrender.com/api/payment/verify",
+              `${baseURL}/api/payment/verify`,
               {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
