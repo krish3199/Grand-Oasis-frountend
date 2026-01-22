@@ -20,6 +20,18 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [mobileMenuOpen])
+
   const logoutHandler = () => {
     dispatch(logout())
     navigate("/login")
@@ -28,19 +40,19 @@ const Header = () => {
   const isAuthenticated = isAuth && user
 
   return (
-    <header className={`fixed w-full top-0 z-50 transition-all duration-700 ${
+    <header className={`fixed w-full top-0 z-[100] transition-all duration-700 ${
       scrolled 
-        ? "bg-black/90 backdrop-blur-xl border-b border-white/10 shadow-lg shadow-black/50 py-2" 
+        ? "bg-black/95 backdrop-blur-xl border-b border-white/10 shadow-lg shadow-black/50 py-2" 
         : "bg-gradient-to-b from-black/80 to-transparent py-4"
     }`}>
       
-      <nav className="max-w-[1440px] mx-auto flex items-center justify-between px-6 md:px-10">
+      <nav className="max-w-[1440px] mx-auto flex items-center justify-between px-4 sm:px-6 md:px-10">
         {/* Premium Logo */}
         <Link
           to="/home"
           className="group relative flex flex-col"
         >
-          <h1 className="font-serif text-2xl md:text-3xl tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-r from-[#bf953f] via-[#fcf6ba] to-[#bf953f] drop-shadow-sm">
+          <h1 className="font-serif text-xl sm:text-2xl md:text-3xl tracking-[0.15em] sm:tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-r from-[#bf953f] via-[#fcf6ba] to-[#bf953f] drop-shadow-sm">
             GRAND OASIS
           </h1>
           <span className="h-[1px] w-0 bg-[#d4af37] group-hover:w-full transition-all duration-500 ease-in-out"></span>
@@ -125,8 +137,13 @@ const Header = () => {
 
         {/* Mobile Menu Button - Minimalist Luxury */}
         <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="lg:hidden relative w-8 h-8 flex flex-col justify-center items-center gap-1.5 group z-50"
+          onClick={(e) => {
+            e.stopPropagation()
+            setMobileMenuOpen(!mobileMenuOpen)
+          }}
+          className="lg:hidden relative w-10 h-10 flex flex-col justify-center items-center gap-1.5 group z-[110] cursor-pointer"
+          aria-label="Toggle menu"
+          type="button"
         >
           <span className={`w-6 h-[1px] bg-[#d4af37] transition-all duration-500 ${mobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
           <span className={`w-6 h-[1px] bg-[#d4af37] transition-all duration-500 ${mobileMenuOpen ? 'opacity-0' : 'w-4 group-hover:w-6'}`}></span>
@@ -135,14 +152,25 @@ const Header = () => {
       </nav>
 
       {/* Premium Mobile Menu Overlay */}
-      <div className={`fixed inset-0 bg-black/95 backdrop-blur-2xl z-40 flex flex-col justify-center items-center transition-all duration-700 ease-in-out ${
-        mobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
-      }`}>
-        <div className="flex flex-col items-center gap-8 text-center">
+      <div 
+        className={`fixed inset-0 bg-black/95 backdrop-blur-2xl z-[90] flex flex-col justify-center items-center transition-all duration-700 ease-in-out ${
+          mobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
+        }`}
+        onClick={(e) => {
+          // Close menu when clicking on overlay (not on links)
+          if (e.target === e.currentTarget) {
+            setMobileMenuOpen(false)
+          }
+        }}
+      >
+        <div className="flex flex-col items-center gap-6 sm:gap-8 text-center px-4">
           <Link 
             to="/home" 
-            className="text-3xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-[#bf953f] to-[#fcf6ba] hover:tracking-widest transition-all duration-500"
-            onClick={() => setMobileMenuOpen(false)}
+            className="text-2xl sm:text-3xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-[#bf953f] to-[#fcf6ba] hover:tracking-widest transition-all duration-500 py-2 px-4 -mx-4 active:scale-95"
+            onClick={(e) => {
+              e.stopPropagation()
+              setMobileMenuOpen(false)
+            }}
           >
             Home
           </Link>
@@ -151,8 +179,11 @@ const Header = () => {
           
           <Link 
             to="/hotels" 
-            className="text-3xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-[#bf953f] to-[#fcf6ba] hover:tracking-widest transition-all duration-500"
-            onClick={() => setMobileMenuOpen(false)}
+            className="text-2xl sm:text-3xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-[#bf953f] to-[#fcf6ba] hover:tracking-widest transition-all duration-500 py-2 px-4 -mx-4 active:scale-95"
+            onClick={(e) => {
+              e.stopPropagation()
+              setMobileMenuOpen(false)
+            }}
           >
             Residences
           </Link>
@@ -163,15 +194,21 @@ const Header = () => {
             <>
               <Link 
                 to="/login" 
-                className="text-lg tracking-[0.2em] text-zinc-400 hover:text-white uppercase transition-colors mt-4"
-                onClick={() => setMobileMenuOpen(false)}
+                className="text-base sm:text-lg tracking-[0.2em] text-zinc-400 hover:text-white uppercase transition-colors mt-4 py-2 px-4 -mx-4 active:scale-95"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setMobileMenuOpen(false)
+                }}
               >
                 Sign In
               </Link>
               <Link 
                 to="/register" 
-                className="mt-8 px-10 py-3 text-sm tracking-[0.2em] font-bold uppercase text-black bg-gradient-to-r from-[#bf953f] via-[#fcf6ba] to-[#aa771c] shadow-[0_0_20px_rgba(191,149,63,0.2)]"
-                onClick={() => setMobileMenuOpen(false)}
+                className="mt-6 sm:mt-8 px-8 sm:px-10 py-2.5 sm:py-3 text-xs sm:text-sm tracking-[0.2em] font-bold uppercase text-black bg-gradient-to-r from-[#bf953f] via-[#fcf6ba] to-[#aa771c] shadow-[0_0_20px_rgba(191,149,63,0.2)] rounded-sm active:scale-95 transition-transform"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setMobileMenuOpen(false)
+                }}
               >
                 Join Club
               </Link>
@@ -180,20 +217,25 @@ const Header = () => {
             <>
               <Link 
                 to="/my-bookings" 
-                className="text-3xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-[#bf953f] to-[#fcf6ba] hover:tracking-widest transition-all duration-500"
-                onClick={() => setMobileMenuOpen(false)}
+                className="text-2xl sm:text-3xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-[#bf953f] to-[#fcf6ba] hover:tracking-widest transition-all duration-500 py-2 px-4 -mx-4 active:scale-95"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setMobileMenuOpen(false)
+                }}
               >
                 My Bookings
               </Link>
-              <div className="text-zinc-500 text-sm mt-4 tracking-wider uppercase">
+              <div className="text-zinc-500 text-xs sm:text-sm mt-4 tracking-wider uppercase px-4">
                 Signed in as <span className="text-[#bf953f]">{user?.email?.split("@")[0]}</span>
               </div>
               <button 
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation()
                   logoutHandler()
                   setMobileMenuOpen(false)
                 }} 
-                className="mt-8 border border-red-900/50 text-red-500/80 hover:bg-red-950/30 hover:border-red-500 px-8 py-3 text-sm tracking-[0.2em] uppercase transition-all duration-300"
+                className="mt-6 sm:mt-8 border border-red-900/50 text-red-500/80 hover:bg-red-950/30 hover:border-red-500 px-6 sm:px-8 py-2.5 sm:py-3 text-xs sm:text-sm tracking-[0.2em] uppercase transition-all duration-300 active:scale-95 rounded-sm"
+                type="button"
               >
                 Sign Out
               </button>
